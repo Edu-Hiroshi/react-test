@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
+import axios from "axios";
 import styled from "styled-components";
 
 import Categories from "./Categories";
@@ -10,6 +11,7 @@ import Seeders from "./Seeders";
 import Leachers from "./Leachers";
 import Completed from "./CompletedDownloads";
 
+// <TdNome> < Titles title={contents.series} /> </TdNome>    
 
 const contents = [
   { series: 'One Piece'          , categ: 'Anime', link: 'Magnet', size: '1.2 GiB',
@@ -49,7 +51,6 @@ const contents = [
     date: '2021-12-23 11:00'     , seed: '2'  , leach: '654'  , cd: '10000' }
 ];
 
-
 const Table = styled.table`
   display: flex;
   flex-direction: column;
@@ -85,35 +86,57 @@ const TdNome = styled.td`
   text-align: left;
 `;
 
+const ContentList = () => {
+  const [results, setResults] = useState([]);
+  const [searchName, setSearchName] = useState('');
+  
+  const doSearch = useCallback (() => {
+    axios.get(`https://api.github.com/users/${searchName}`)
+      .then((response) => {
+        setResults([...results, response.data.name]);
+      })
+      .catch((error) => {
+        console.error(error);
+        setResults(['Deu erro']);
+      });
+  // eslint-disable-next-line
+  }, [setResults, searchName, results]);
 
 
-const ContentList = () => (
-  <Table>
-    <TableRow>
-      <TdCol>Category</TdCol>
-      <TdNome>Name</TdNome>
-      <TdCol>Link</TdCol>
-      <TdCol>Size</TdCol>
-      <TdCol>Date</TdCol>
-      <TdCol>Seeders</TdCol>
-      <TdCol>Leachers</TdCol>
-      <TdCol>Completed Downloads</TdCol>
-    </TableRow>
-    
-    {contents.map ( (contents) => (
-      <TableRow>
-        <TdCol> < Categories category={contents.categ} /> </TdCol>
-        <TdNome> < Titles title={contents.series} /> </TdNome>
-        <TdCol> < Link link={contents.link} /> </TdCol>
-        <TdCol> < Size size={contents.size} /> </TdCol>
-        <TdCol> < Dates date={contents.date} /> </TdCol>
-        <TdCol> < Seeders seed={contents.seed} /> </TdCol>
-        <TdCol> < Leachers leach={contents.leach} /> </TdCol>
-        <TdCol> < Completed cd={contents.cd} /> </TdCol>
-      </TableRow>
-    ))}
+  return (
+    <div>
 
-  </Table>
-);
+      <input onChange={(event) => setSearchName(event.target.value)} />
+      <button onClick={doSearch}>Pesquisar</button>
+      <Table>
+        <TableRow>
+          <TdCol>Category</TdCol>
+          <TdNome>Name</TdNome>
+          <TdCol>Link</TdCol>
+          <TdCol>Size</TdCol>
+          <TdCol>Date</TdCol>
+          <TdCol>Seeders</TdCol>
+          <TdCol>Leachers</TdCol>
+          <TdCol>Completed Downloads</TdCol>
+        </TableRow>
+        
+        {contents.map ( (contents) => (
+          <TableRow>
+            <TdCol> < Categories category={contents.categ} /> </TdCol>
+            <TdNome> < Titles title={results} /> </TdNome>      
+            <TdCol> < Link link={contents.link} /> </TdCol>
+            <TdCol> < Size size={contents.size} /> </TdCol>
+            <TdCol> < Dates date={contents.date} /> </TdCol>
+            <TdCol> < Seeders seed={contents.seed} /> </TdCol>
+            <TdCol> < Leachers leach={contents.leach} /> </TdCol>
+            <TdCol> < Completed cd={contents.cd} /> </TdCol>
+          </TableRow>
+        ))}
+      </Table>
+    </div>
+  );
+};
 
 export default ContentList;
+
+
