@@ -2,14 +2,14 @@ import React, { useState, useCallback } from "react";
 import axios from "axios";
 import styled from "styled-components";
 
-import Categories from "./Categories";
-import Titles from "./Titles";
-import Link from "./Link";
-import Dates from "./Dates";
-import Size from "./Sizes";
-import Seeders from "./Seeders";
-import Leachers from "./Leachers";
-import Completed from "./CompletedDownloads";
+import Categories from "./contents/Categories";
+import Titles from "./contents/Titles";
+import Link from "./contents/Link";
+import Dates from "./contents/Dates";
+import Size from "./contents/Sizes";
+import Seeders from "./contents/Seeders";
+import Leachers from "./contents/Leachers";
+import Completed from "./contents/CompletedDownloads";
 
 // <TdNome> < Titles title={contents.series} /> </TdNome>    
 
